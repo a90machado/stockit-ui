@@ -1,0 +1,158 @@
+<mat-card class="mt-4 mat-elevation-z15">
+  <div class="col-12 w-100 text-center" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="row mb-2">
+    <div class="col-12 d-flex inline-flex" *ngIf="!loading">
+      <h1>
+        {{employeeFormGroup.disabled ? 'View details of the employee' : isEditMode ? 'Edit details of the employee' : 'Create a new employee'}}
+      </h1>
+      <button mat-stroked-button color="primary" class="ms-auto" (click)="goToEditMode()" *ngIf="selectedEmployee">
+        <span class="material-icons-round">mode_edit</span>
+      </button>
+    </div>
+  </div>
+  <div class="row" *ngIf="!loading">
+    <div class="col-12">
+      <form [formGroup]="employeeFormGroup" class="w-100" (submit)="saveEmployee()">
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-6 pe-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>First name</mat-label>
+              <input type="text" matInput formControlName="firstNameFormControl" [errorStateMatcher]="matcher"
+                placeholder="" autocomplete="off">
+              <mat-error *ngIf="firstName.hasError('required')">
+                First name is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6 ps-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Last name</mat-label>
+              <input type="text" matInput formControlName="lastNameFormControl" [errorStateMatcher]="matcher"
+                placeholder="" autocomplete="off">
+              <mat-error *ngIf="lastName.hasError('required')">
+                Last name is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-6 pe-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Employee number </mat-label>
+              <input type="text" matInput formControlName="employeeNumberFormControl" [errorStateMatcher]="matcher"
+                placeholder="" autocomplete="off" UniqueEmployee>
+              <mat-error *ngIf="employeeNumber.hasError('required')">
+                Employee number is <strong>required</strong>.
+              </mat-error>
+              <mat-error *ngIf="employeeNumber.hasError('employeeError')">
+                This employee number is already register to another employee.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6 ps-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Role </mat-label>
+              <input type="text" matInput formControlName="roleFormControl" [errorStateMatcher]="matcher"
+                placeholder="">
+              <mat-error *ngIf="role.hasError('required')">
+                Role is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-6 pe-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Market </mat-label>
+              <input type="text" matInput formControlName="marketFormControl" [errorStateMatcher]="matcher"
+                placeholder="">
+              <mat-error *ngIf="market.hasError('required')">
+                Market is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6 ps-2">
+            <mat-form-field class="w-100" appearance="fill" (mousedown)="picker.open(); $event.preventDefault;">
+              <mat-label>Start date </mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="startDateFormControl" autocomplete="off"
+                [errorStateMatcher]="matcher" placeholder="">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="startDate.hasError('required')">
+                Start date is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-12">
+            <button mat-stroked-button color="warn" class="float-end ms-2" [disabled]="employeeFormGroup.disabled">
+              <span class="label">SAVE</span>
+            </button>
+            <button mat-stroked-button color="primary" class="float-end" (click)="goBackToEmployees()">
+              <span class="label">{{'GO BACK'}}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row" [hidden]="!selectedEmployee">
+    <hr class="mt-4">
+    <div *ngIf="credentialsDataSource.data && credentialsDataSource.data.length === 0 && !loading">
+      <h1>
+        There are no credentials associated with this employees.
+      </h1>
+    </div>
+    <div [hidden]="(!loading && credentialsDataSource.data.length === 0) || loading">
+      <div class="row mt-4">
+        <div class="col-12">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Search</mat-label>
+            <input type="string" matInput placeholder="Search by type or username" (keyup)="search($event)">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <table mat-table [dataSource]="credentialsDataSource" aria-describedby="credentials of employee" class="w-100"
+        #credentialsSort="matSort" matSort>
+        <ng-container matColumnDef="type">
+          <th id="type" mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+          <td mat-cell *matCellDef="let credential">{{credential.type}}</td>
+        </ng-container>
+        <ng-container matColumnDef="username">
+          <th id="username" mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
+          <td mat-cell *matCellDef="let credential">{{credential.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <th id="notes" mat-header-cell *matHeaderCellDef mat-sort-header>Notes</th>
+          <td mat-cell *matCellDef="let credential">{{credential.notes}}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th id="actions" mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
+          <td mat-cell *matCellDef="let credential">
+            <button mat-stroked-button color="primary" (click)="editCredential(credential)" [disabled]="employeeFormGroup.disabled">
+              <span class="material-icons-round">mode_edit</span>
+            </button>
+            <button mat-stroked-button color="primary" class="ms-4" (click)="deleteCredential(credential)" [disabled]="employeeFormGroup.disabled">
+              <span class="material-icons-round">delete</span>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForCredentials"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForCredentials;"></tr>
+      </table>
+      <mat-paginator #credentialsPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+        [disabled]="credentialsDataSource.data.length < 6"></mat-paginator>
+    </div>
+    <div class="row d-flex inline-flex mt-2 p-0">
+      <div class="col-12 p-0">
+        <button mat-stroked-button color="warn" class="float-end" [disabled]="employeeFormGroup.disabled" (click)="addNewCredential()">
+          <span class="label">ADD NEW CREDENTIAL</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-card>

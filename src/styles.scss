@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+html, body {
+  height: calc(100% - 64px);
+  overflow: hidden;
+}
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #F1F1F1;
+}
+.button-full-width{
+  width: 100%;
+  span.label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  span.material-icons-round {
+    font-size: 26px;
+    padding-right: 8px;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
