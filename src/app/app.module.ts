@@ -15,6 +15,8 @@ import { APP_DATE_FORMATS } from './shared/constants/app-constants';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CredentialComponent } from './employees/components/credential/credential.component';
 import { ProductComponent } from './employees/components/product/product.component';
+import { ProductsComponent } from './products/products.component';
+import { MoveProductsComponent } from './employees/components/move-products/move-products.component';
 
 
 
@@ -25,7 +27,9 @@ import { ProductComponent } from './employees/components/product/product.compone
     EmployeesComponent,
     EmployeeComponent,
     CredentialComponent,
-    ProductComponent
+    ProductComponent,
+    ProductsComponent,
+    MoveProductsComponent
   ],
   imports: [
     BrowserModule,

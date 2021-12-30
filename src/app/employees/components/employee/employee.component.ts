@@ -17,6 +17,7 @@ import { CredentialService } from '../../services/credential.service';
 import { EmployeeService } from '../../services/employee.service';
 import { ProductService } from '../../services/product.service';
 import { CredentialComponent } from '../credential/credential.component';
+import { MoveProductsComponent } from '../move-products/move-products.component';
 import { ProductComponent } from '../product/product.component';
 
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -303,6 +304,29 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public editProduct(product: Product): void {
+    this.dialog.open(ProductComponent, {
+      autoFocus: false,
+      width: '500px',
+      data: product
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loading = true;
+        this.productService.addNewProductToEmployee(product).subscribe((res) => {
+          let data = this.productsDataSource.data.slice();
+          data = data.filter(p => p.id !== product.id);
+          data.push(res);
+          this.productsDataSource.data = data.slice();
+          this.initTableProducts();
+        }, () => {
+          this.snackBar.open('There was a problem updating the product, please try again later', 'CLOSE');
+        }).add(() => {
+          this.loading = false;
+        });
+      }
+    });
+  }
+
   public editCredential(credential: Credential): void {
     this.dialog.open(CredentialComponent, {
       autoFocus: false,
@@ -317,7 +341,6 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
           data.push(res);
           this.credentialsDataSource.data = data.slice();
           this.initTableCredentials();
-          // TODO: Miss add error
         }, () => {
           this.snackBar.open('There was a problem updating the credential, please try again later', 'CLOSE');
         }).add(() => {
@@ -339,7 +362,8 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
 
   public deleteCredential(credential: Credential): void {
     this.dialog.open(ConfirmDialogComponent, {
-      width: '500px'
+      width: '500px',
+      data: 'Are you sure you want to delete? There are no rollback on this action.'
     }).afterClosed().subscribe(res => {
       if (res) {
         this.loading = true;
@@ -352,6 +376,51 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
           this.snackBar.open('There was a problem deleting the credential, please try again later', 'CLOSE');
         }).add(() => this.loading = false );
       }
+    });
+  }
+
+  public productOutOfService(product: Product): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: 'Are you sure you want to set this product as out of service?'
+    }).afterClosed().subscribe(res => {
+      if (res) {
+        this.loading = true;
+        product.outOfService = true;
+        this.productService.addNewProductToEmployee(product).subscribe(() => {
+          let data = this.productsDataSource.data.slice();
+          data = data.filter(p => p.id !== product.id);
+          this.productsDataSource.data = data.slice();
+          this.initTableProducts();
+        }, () => {
+          this.snackBar.open('There was a problem changing the status of the product, please try again later', 'CLOSE');
+        }).add(() => this.loading = false );
+      }
+    });
+  }
+
+  public moveProducts(): void {
+    this.employeeService.getAllEmployees().subscribe(res => {
+      this.dialog.open(MoveProductsComponent, {
+        width: '500px',
+        data: res
+      }).afterClosed().subscribe((res: Employee) => {
+        if (res) {
+          this.loading = true;
+          const productsToMove = this.productsDataSource.data.slice();
+          productsToMove.forEach(p => p.employeeDTO = res);
+          this.productService.moveProductsToOtherEmployee(productsToMove).subscribe(() => {
+            this.productsDataSource.data = [];
+            this.initTableProducts();
+          }, () => {
+            this.snackBar.open('There was a problem moving the products, please try again later', 'CLOSE');
+          }).add(() => {
+            this.loading = false;
+          });
+        }
+      });
+    }, () => {
+      this.snackBar.open('There was a problem getting the available employees, please try again later', 'CLOSE');
     });
   }
 

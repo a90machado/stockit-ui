@@ -21,4 +21,12 @@ export class ProductService {
     return this.httpClient.post<Product[]>(this.url + 'employee', employee);
   }
 
+  public moveProductsToOtherEmployee(products: Product[]): Observable<void> {
+    return this.httpClient.post<void>(this.url + 'move', products);
+  }
+
+  public getProductsOutOfService(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.url);
+  }
+
 }

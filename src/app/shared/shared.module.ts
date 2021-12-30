@@ -14,6 +14,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 
@@ -36,7 +38,9 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatSelectModule
   ],
   exports: [
     MatToolbarModule,
@@ -50,7 +54,9 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatCardModule,
     MatDatepickerModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatSelectModule
   ]
 })
 export class SharedModule { }

@@ -20,6 +20,10 @@ export class EmployeeService {
     return this.httpClient.get<Employee[]>(this.url);
   }
 
+  public getAllEmployeesInactive(): Observable<Employee[]> {
+    return this.httpClient.get<Employee[]>(this.url + '/inactive');
+  }
+
   public getEmployeeByNumber(id: number): Observable<Employee> {
     return this.httpClient.get<Employee>(this.url + '/' + id);
   }
