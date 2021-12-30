@@ -29,4 +29,7 @@ export class ProductService {
     return this.httpClient.get<Product[]>(this.url);
   }
 
+  public getProductsInService(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.url + 'active');
+  }
 }

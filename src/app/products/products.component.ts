@@ -17,6 +17,7 @@ import { ConfirmDialogComponent } from '../shared/components/confirm-dialog/conf
 export class ProductsComponent implements OnInit, AfterViewInit {
 
   public loading = true;
+  public productActive = true;
   @ViewChild(MatSort) public productsSort: MatSort;
   @ViewChild('productsPaginator') public productsPaginator: MatPaginator;
   public productsDataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>();
@@ -29,8 +30,34 @@ export class ProductsComponent implements OnInit, AfterViewInit {
               private dialog: MatDialog) { }
 
   public ngOnInit() {
+    this.getActiveProducts();
+  }
+
+  public getProducts(): void {
+    this.loading = true;
+    this.productActive = !this.productActive;
+    if (this.productActive) {
+      this.getActiveProducts();
+    } else {
+      this.getInactiveProducts();
+    }
+  }
+
+  private getActiveProducts(): void {
+    this.productService.getProductsInService().subscribe(res => {
+      this.productsDataSource.data = res;
+      this.initTableProducts();
+    }, () => {
+      this.snackBar.open('There was a problem getting the products, please try again later', 'CLOSE');
+    }).add(() => {
+      this.loading = false;
+    });
+  }
+
+  private getInactiveProducts(): void {
     this.productService.getProductsOutOfService().subscribe(res => {
       this.productsDataSource.data = res;
+      this.initTableProducts();
     }, () => {
       this.snackBar.open('There was a problem getting the products, please try again later', 'CLOSE');
     }).add(() => {

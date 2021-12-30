@@ -8,7 +8,14 @@
     </h1>
   </div>
   <div [hidden]="(!loading && productsDataSource.data.length === 0) || loading">
-    <h1>Products out of service</h1>
+    <div class="d-flex inline-flex">
+      <h1 class="align-self-center">Products</h1>
+      <span class="align-self-center ms-auto me-2">
+        {{ productActive ? 'Active products' : 'Products out of service' }}
+      </span>
+      <mat-slide-toggle class="align-self-center" [checked]="productActive" (change)="getProducts()">
+      </mat-slide-toggle>
+    </div>
     <div class="row mt-4">
       <div class="col-12">
         <mat-form-field class="w-100" appearance="fill">
@@ -46,7 +53,7 @@
             <button mat-stroked-button color="primary" (click)="editProduct(product)">
               <span class="material-icons-round">mode_edit</span>
             </button>
-            <button mat-stroked-button color="primary" class="ms-4" (click)="productOutOfService(product)">
+            <button mat-stroked-button color="primary" class="ms-4" (click)="productOutOfService(product)" *ngIf="productActive">
               <span class="material-icons-round">assignment_turned_in</span>
             </button>
           </td>
