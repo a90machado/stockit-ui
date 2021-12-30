@@ -14,6 +14,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { APP_DATE_FORMATS } from './shared/constants/app-constants';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CredentialComponent } from './employees/components/credential/credential.component';
+import { ProductComponent } from './employees/components/product/product.component';
 
 
 
@@ -23,7 +24,8 @@ import { CredentialComponent } from './employees/components/credential/credentia
     NavbarComponent,
     EmployeesComponent,
     EmployeeComponent,
-    CredentialComponent
+    CredentialComponent,
+    ProductComponent
   ],
   imports: [
     BrowserModule,

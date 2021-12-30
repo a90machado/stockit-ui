@@ -1,5 +1,5 @@
 .container-router {
   margin-top: 64px;
   overflow: auto;
-  height: 100%;
+  height: calc(100% - 64px);
 }

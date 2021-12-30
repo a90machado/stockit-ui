@@ -21,6 +21,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class CredentialComponent implements OnInit {
 
   public matcher = new MyErrorStateMatcher();
+  public title = 'Add a new credential to the employee';
 
   public credentialFormGroup: FormGroup = new FormGroup({
     typeFormControl: new FormControl('', [Validators.required]),
@@ -50,6 +51,7 @@ export class CredentialComponent implements OnInit {
 
   public ngOnInit() {
     if(this.data) {
+      this.title = 'Edit the credential of the employee';
       this.setDefaultValues(this.data);
     }
   }

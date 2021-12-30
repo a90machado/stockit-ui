@@ -22,7 +22,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   public loadingEmployees = true;
 
   public get displayedColumns(): string[] {
-    return ['firstName', 'employeeNumber', 'role', 'market', 'startDate'];
+    return ['firstName', 'employeeNumber', 'role', 'market', 'startDate', 'endDate'];
   }
 
   constructor(private employeeService: EmployeeService,

@@ -8,12 +8,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Credential } from '../../models/credential.model';
 import { Employee } from '../../models/employee.model';
+import { Product } from '../../models/product.model';
 import { CredentialService } from '../../services/credential.service';
 import { EmployeeService } from '../../services/employee.service';
+import { ProductService } from '../../services/product.service';
 import { CredentialComponent } from '../credential/credential.component';
+import { ProductComponent } from '../product/product.component';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -31,8 +35,12 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class EmployeeComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) public credentialsSort: MatSort;
-  @ViewChild(MatPaginator) public credentialsPaginator: MatPaginator;
+  @ViewChild('credentialsPaginator') public credentialsPaginator: MatPaginator;
   public credentialsDataSource: MatTableDataSource<Credential> = new MatTableDataSource<Credential>();
+
+  @ViewChild(MatSort) public productsSort: MatSort;
+  @ViewChild('productsPaginator') public productsPaginator: MatPaginator;
+  public productsDataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>();
 
   public matcher = new MyErrorStateMatcher();
   public isEditMode = false;
@@ -76,15 +84,21 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     return ['type', 'username', 'notes', 'actions'];
   }
 
+  public get displayedColumnsForProducts(): string[] {
+    return ['name', 'description', 'serialNumber', 'notes', 'actions'];
+  }
+
   constructor(private router: Router,
     private employeeService: EmployeeService,
     private credentialService: CredentialService,
+    private productService: ProductService,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
     public dialog: MatDialog) { }
 
   public ngAfterViewInit(): void {
     this.initTableCredentials();
+    this.initTableProducts();
   }
 
   private initTableCredentials(): void {
@@ -97,22 +111,38 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     };
   }
 
+  private initTableProducts(): void {
+    this.productsDataSource.paginator = this.productsPaginator;
+    this.productsDataSource.sort = this.productsSort;
+
+    this.productsDataSource.filterPredicate = (data: Product, filter: string) => {
+      return (data.name.toLowerCase() +
+        data.description.toLowerCase() +
+        data.serialNumber.toLowerCase()).trim().toLowerCase().includes(filter);
+    };
+  }
+
   public ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       if (params && params.id && params.id !== 'new') {
         this.loading = true;
         this.employeeService.getEmployeeByNumber(params.id).subscribe(employee => {
           this.setDefaults(employee);
-          this.credentialService.getCredentialsByEmployee(employee).subscribe(credentials => {
-            this.credentialsDataSource.data = credentials;
-          }, () => {
-            this.snackBar.open('There was a problem getting the credentials, please try again later', 'CLOSE');
-          }, () => {
-            this.snackBar.open('There was a problem getting the employee, please try again later', 'CLOSE');
-          }).add(() => {
-            this.initTableCredentials();
-            this.loading = false;
-          });
+
+          forkJoin([this.credentialService.getCredentialsByEmployee(employee),
+                    this.productService.getProductsByEmployee(employee)]).subscribe(([credentials, products]) => {
+                      this.credentialsDataSource.data = credentials;
+                      this.productsDataSource.data = products;
+                      this.initTableCredentials();
+                      this.initTableProducts();
+                    }, () => {
+                      this.snackBar.open('There was a problem getting the credentials/products, please try again later', 'CLOSE');
+                    }).add(() => {
+                      this.loading = false;
+                    });
+
+        }, () => {
+          this.snackBar.open('There was a problem getting the employee, please try again later', 'CLOSE');
         });
       }
     });
@@ -227,6 +257,29 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public addNewProduct(): void {
+    this.dialog.open(ProductComponent, {
+      autoFocus: false,
+      width: '500px',
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loading = true;
+        const product: Product = result;
+        product.employeeDTO = this.selectedEmployee;
+        this.productService.addNewProductToEmployee(product).subscribe((res) => {
+          const data = this.productsDataSource.data.slice();
+          data.push(res);
+          this.productsDataSource.data = data.slice();
+          this.initTableProducts();
+        }, () => {
+          this.snackBar.open('There was a problem adding the product, please try again later', 'CLOSE');
+        }).add(() => {
+          this.loading = false;
+        })
+      }
+    });
+  }
+
   public addNewCredential(): void {
     this.dialog.open(CredentialComponent, {
       autoFocus: false,
@@ -241,7 +294,6 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
           data.push(res);
           this.credentialsDataSource.data = data.slice();
           this.initTableCredentials();
-          // TODO: Miss add error
         }, () => {
           this.snackBar.open('There was a problem adding the credential, please try again later', 'CLOSE');
         }).add(() => {
@@ -278,6 +330,11 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
   public search(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.credentialsDataSource.filter = filterValue.toLowerCase();
+  }
+
+  public searchProducts(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.productsDataSource.filter = filterValue.toLowerCase();
   }
 
   public deleteCredential(credential: Credential): void {

@@ -1,4 +1,4 @@
-<mat-card class="mt-4 mat-elevation-z15">
+<mat-card class="mt-4 mb-4 mat-elevation-z15">
   <div class="col-12 w-100 text-center" *ngIf="loading">
     <mat-spinner></mat-spinner>
   </div>
@@ -100,8 +100,8 @@
     </div>
   </div>
   <div class="row" [hidden]="!selectedEmployee">
-    <hr class="mt-4">
     <div *ngIf="credentialsDataSource.data && credentialsDataSource.data.length === 0 && !loading">
+      <hr class="mt-4">
       <h1>
         There are no credentials associated with this employees.
       </h1>
@@ -109,6 +109,9 @@
     <div [hidden]="(!loading && credentialsDataSource.data.length === 0) || loading">
       <div class="row mt-4">
         <div class="col-12">
+          <h1>
+            Credentials
+          </h1>
           <mat-form-field class="w-100" appearance="fill">
             <mat-label>Search</mat-label>
             <input type="string" matInput placeholder="Search by type or username" (keyup)="search($event)">
@@ -151,6 +154,69 @@
       <div class="col-12 p-0">
         <button mat-stroked-button color="warn" class="float-end" [disabled]="employeeFormGroup.disabled" (click)="addNewCredential()">
           <span class="label">ADD NEW CREDENTIAL</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row" [hidden]="!selectedEmployee">
+    <div *ngIf="productsDataSource.data && productsDataSource.data.length === 0 && !loading">
+      <hr class="mt-4">
+      <h1>
+        There are no products associated with this employees.
+      </h1>
+    </div>
+    <div [hidden]="(!loading && productsDataSource.data.length === 0) || loading">
+      <div class="row mt-4">
+        <div class="col-12">
+          <h1>
+            Products
+          </h1>
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Search</mat-label>
+            <input type="string" matInput placeholder="Search by type or username" (keyup)="searchProducts($event)">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <table mat-table [dataSource]="productsDataSource" aria-describedby="products of employee" class="w-100"
+        #productsSort="matSort" matSort>
+        <ng-container matColumnDef="name">
+          <th id="name" mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let product">{{product.name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th id="description" mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+          <td mat-cell *matCellDef="let product">{{product.description}}</td>
+        </ng-container>
+        <ng-container matColumnDef="serialNumber">
+          <th id="serialNumber" mat-header-cell *matHeaderCellDef mat-sort-header>Serial number</th>
+          <td mat-cell *matCellDef="let product">{{product.serialNumber}}</td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <th id="notes" mat-header-cell *matHeaderCellDef mat-sort-header>Notes</th>
+          <td mat-cell *matCellDef="let product">{{product.notes}}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th id="actions" mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
+          <td mat-cell *matCellDef="let credential">
+            <button mat-stroked-button color="primary"  [disabled]="employeeFormGroup.disabled">
+              <span class="material-icons-round">mode_edit</span>
+            </button>
+            <button mat-stroked-button color="primary" class="ms-4"  [disabled]="employeeFormGroup.disabled">
+              <span class="material-icons-round">delete</span>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForProducts"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForProducts;"></tr>
+      </table>
+      <mat-paginator #productsPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+        [disabled]="productsDataSource.data.length < 6"></mat-paginator>
+    </div>
+    <div class="row d-flex inline-flex mt-2 p-0">
+      <div class="col-12 p-0">
+        <button mat-stroked-button color="warn" class="float-end" [disabled]="employeeFormGroup.disabled" (click)="addNewProduct()">
+          <span class="label">ADD NEW PRODUCT</span>
         </button>
       </div>
     </div>
