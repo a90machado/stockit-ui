@@ -53,11 +53,11 @@
           </div>
           <div class="col-6 ps-2">
             <mat-form-field class="w-100" appearance="fill">
-              <mat-label>Role </mat-label>
-              <input type="text" matInput formControlName="roleFormControl" [errorStateMatcher]="matcher"
+              <mat-label>Job title </mat-label>
+              <input type="text" matInput formControlName="jobTitleFormControl" [errorStateMatcher]="matcher"
                 placeholder="">
-              <mat-error *ngIf="role.hasError('required')">
-                Role is <strong>required</strong>.
+              <mat-error *ngIf="jobTitle.hasError('required')">
+                Job title is <strong>required</strong>.
               </mat-error>
             </mat-form-field>
           </div>
@@ -65,15 +65,49 @@
         <div class="row d-flex inline-flex mb-2">
           <div class="col-6 pe-2">
             <mat-form-field class="w-100" appearance="fill">
-              <mat-label>Market </mat-label>
-              <input type="text" matInput formControlName="marketFormControl" [errorStateMatcher]="matcher"
+              <mat-label>Office location </mat-label>
+              <input type="text" matInput formControlName="officeLocationFormControl" [errorStateMatcher]="matcher"
                 placeholder="">
-              <mat-error *ngIf="market.hasError('required')">
-                Market is <strong>required</strong>.
+              <mat-error *ngIf="officeLocation.hasError('required')">
+                Office location is <strong>required</strong>.
               </mat-error>
             </mat-form-field>
           </div>
           <div class="col-6 ps-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Department </mat-label>
+              <input type="text" matInput formControlName="departmentFormControl" [errorStateMatcher]="matcher"
+                placeholder="">
+              <mat-error *ngIf="department.hasError('required')">
+                Department is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-6 pe-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Email </mat-label>
+              <input type="text" matInput formControlName="emailFormControl" [errorStateMatcher]="matcher"
+                placeholder="">
+              <mat-error *ngIf="email.hasError('required')">
+                Email is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-6 ps-2">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Phone number </mat-label>
+              <input type="text" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher"
+                placeholder="">
+              <mat-error *ngIf="phoneNumber.hasError('required')">
+                Phone number is <strong>required</strong>.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row d-flex inline-flex mb-2">
+          <div class="col-6 pe-2">
             <mat-form-field class="w-100" appearance="fill" (mousedown)="picker.open(); $event.preventDefault;">
               <mat-label>Start date </mat-label>
               <input matInput [matDatepicker]="picker" formControlName="startDateFormControl" autocomplete="off"
@@ -88,7 +122,8 @@
         </div>
         <div class="row d-flex inline-flex mb-2">
           <div class="col-12">
-            <button mat-stroked-button color="warn" class="float-end ms-2" [disabled]="employeeFormGroup.disabled || (selectedEmployee && !selectedEmployee.endDate)">
+            <button mat-stroked-button color="warn" class="float-end ms-2"
+            [disabled]="employeeFormGroup.disabled || (selectedEmployee && selectedEmployee.endDate)">
               <span class="label">SAVE</span>
             </button>
             <button mat-stroked-button color="primary" class="float-end" (click)="goBackToEmployees()">

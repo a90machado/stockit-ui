@@ -24,7 +24,7 @@ export class EmployeesComponent implements OnInit {
   public loadingEmployees = true;
   public employeeActive = true;
   public get displayedColumns(): string[] {
-    return ['firstName', 'employeeNumber', 'role', 'market', 'startDate', 'endDate', 'actions'];
+    return ['firstName', 'employeeNumber', 'jobTitle', 'department', 'startDate', 'endDate', 'actions'];
   }
 
   constructor(private employeeService: EmployeeService,

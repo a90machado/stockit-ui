@@ -52,8 +52,11 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     firstNameFormControl: new FormControl('', [Validators.required]),
     lastNameFormControl: new FormControl('', [Validators.required]),
     employeeNumberFormControl: new FormControl('', [Validators.required]),
-    roleFormControl: new FormControl('', [Validators.required]),
-    marketFormControl: new FormControl('', [Validators.required]),
+    jobTitleFormControl: new FormControl('', [Validators.required]),
+    departmentFormControl: new FormControl('', [Validators.required]),
+    officeLocationFormControl: new FormControl('', [Validators.required]),
+    phoneNumberFormControl: new FormControl('', Validators.required),
+    emailFormControl: new FormControl('', Validators.required),
     startDateFormControl: new FormControl('', [Validators.required])
   });
 
@@ -69,12 +72,24 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     return this.employeeFormGroup.get('employeeNumberFormControl');
   }
 
-  public get role(): AbstractControl {
-    return this.employeeFormGroup.get('roleFormControl');
+  public get jobTitle(): AbstractControl {
+    return this.employeeFormGroup.get('jobTitleFormControl');
   }
 
-  public get market(): AbstractControl {
-    return this.employeeFormGroup.get('marketFormControl');
+  public get department(): AbstractControl {
+    return this.employeeFormGroup.get('departmentFormControl');
+  }
+
+  public get email(): AbstractControl {
+    return this.employeeFormGroup.get('emailFormControl');
+  }
+
+  public get phoneNumber(): AbstractControl {
+    return this.employeeFormGroup.get('phoneNumberFormControl');
+  }
+
+  public get officeLocation(): AbstractControl {
+    return this.employeeFormGroup.get('officeLocationFormControl');
   }
 
   public get startDate(): AbstractControl {
@@ -165,8 +180,11 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     this.firstName.setValue(employee.firstName);
     this.lastName.setValue(employee.lastName);
     this.employeeNumber.setValue(employee.employeeNumber);
-    this.role.setValue(employee.role);
-    this.market.setValue(employee.market);
+    this.jobTitle.setValue(employee.jobTitle);
+    this.department.setValue(employee.department);
+    this.phoneNumber.setValue(employee.phoneNumber);
+    this.email.setValue(employee.email);
+    this.officeLocation.setValue(employee.officeLocation);
     this.startDate.setValue(employee.startDate);
     this.selectedEmployee = employee;
   }
@@ -186,10 +204,19 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
     if (this.employeeNumber.value !== this.selectedEmployee.employeeNumber) {
       changed = true;
     }
-    if (this.role.value !== this.selectedEmployee.role) {
+    if (this.jobTitle.value !== this.selectedEmployee.jobTitle) {
       changed = true;
     }
-    if (this.market.value !== this.selectedEmployee.market) {
+    if (this.department.value !== this.selectedEmployee.department) {
+      changed = true;
+    }
+    if (this.officeLocation.value !== this.selectedEmployee.officeLocation) {
+      changed = true;
+    }
+    if (this.phoneNumber.value !== this.selectedEmployee.phoneNumber) {
+      changed = true;
+    }
+    if (this.email.value !== this.selectedEmployee.email) {
       changed = true;
     }
     if (this.startDate.value !== this.selectedEmployee.startDate) {
@@ -208,8 +235,11 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
             firstName: this.firstName.value,
             lastName: this.lastName.value,
             employeeNumber: this.employeeNumber.value,
-            role: this.role.value,
-            market: this.market.value,
+            jobTitle: this.jobTitle.value,
+            department: this.department.value,
+            officeLocation: this.officeLocation.value,
+            phoneNumber: this.phoneNumber.value,
+            email: this.email.value,
             startDate: this.startDate.value
           };
           this.employeeService.createNewEmployeeOrUpdate(employee, true).subscribe(() => {
@@ -233,8 +263,11 @@ export class EmployeeComponent implements OnInit, AfterViewInit {
           firstName: this.firstName.value,
           lastName: this.lastName.value,
           employeeNumber: this.employeeNumber.value,
-          role: this.role.value,
-          market: this.market.value,
+          jobTitle: this.jobTitle.value,
+          department: this.department.value,
+          officeLocation: this.officeLocation.value,
+          phoneNumber: this.phoneNumber.value,
+          email: this.email.value,
           startDate: this.startDate.value,
           endDate: null
         };
